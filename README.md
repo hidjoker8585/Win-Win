@@ -13,7 +13,7 @@
 주언어는 Java이고 Eclipse툴과 Spring Framework를 활용하여 개발했습니다.
 Oracle DBMS를 활용하기 위해 JDBC를 사용했습니다.
 
-<strong>개발부분</strong> : Notice Board, QnA Board, 관리자 페이지 통계 (비중 : 1/7)
+<strong>개발부분</strong> : Notice Board, QnA Board, 관리자 페이지 통계 (비중 : 전체의 1/7)
 
 
 
