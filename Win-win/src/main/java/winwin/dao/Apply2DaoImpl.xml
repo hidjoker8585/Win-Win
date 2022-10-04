@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="winwin.dao.Apply2Dao">
+  
+  	<select id="selectJobOpen" parameterType="winwin.dto.JobopenBasic" resultType="winwin.dto.JobopenBasic">
+  		SELECT title, endDate, jobopenNo FROM jobopenbasic WHERE jobopenNo=#{jobopenNo}
+  	</select>
+  
+  	<insert id="insertLanguage" parameterType="winwin.dto.Language">
+  		INSERT INTO language(languageNo, userId, jobopenNo, lName, grade, testName, score, lDate, lOrgan)
+  		VALUES(LANGUAGE_SEQ.NEXTVAL, #{userId }, #{jobopenNo }, '영어', #{grade }, #{testName }, #{score }, #{lDate }, #{lOrgan })
+  	</insert>
+  	
+  	<insert id="insertLicense" parameterType="winwin.dto.License">
+  		INSERT INTO license(licenseNo, userId, jobopenNo, liName, liDate, liOrgan)
+  		VALUES(LICENSE_SEQ.NEXTVAL, #{userId }, #{jobopenNo }, #{liName }, #{liDate }, #{liOrgan })
+  	</insert>
+  	
+  	<insert id="insertCareer" parameterType="winwin.dto.Career">
+  		INSERT INTO career(careerNo, userId, jobopenNo, cStartDate, cEndDate, cName, position, task, salary, cContent)
+  		VALUES(CAREER_SEQ.NEXTVAL, #{userId }, #{jobopenNo }, #{cStartDate }, #{cEndDate }, #{cName }, #{position }, #{task }, #{salary }, #{cContent })
+  	</insert>
+  	
+  	<insert id="insertActivity" parameterType="winwin.dto.Activity">
+  		INSERT INTO activity(activityNo, userId, jobopenNo, aName, aStartDate, aEndDate, aContent)
+  		VALUES(ACTIVITY_SEQ.NEXTVAL, #{userId }, #{jobopenNo }, #{aName }, #{aStartDate }, #{aEndDate }, #{aContent })
+  	</insert>
+  	
+  	<insert id="insertExperience" parameterType="winwin.dto.Experience">
+  		INSERT INTO experience(experienceNo, userId, jobopenNo, eOption, eOrgan, eStartDate, eEndDate, eContent)
+  		VALUES(EXPERIENCE_SEQ.NEXTVAL, #{userId }, #{jobopenNo }, #{eOption }, #{eOrgan }, #{eStartDate }, #{eEndDate }, #{eContent })
+  	</insert>
+  	
+  	<insert id="insertMaterial" parameterType="winwin.dto.Material">
+  		INSERT INTO material(fileNo, userId, portfolioId, originName, storedName, writedate, filesize)
+  		VALUES(MATERIAL_SEQ.NEXTVAL, #{userId }, #{portfolioId }, #{originName }, #{storedName }, #{writedate }, #{filesize })
+  	</insert>
+  	
+  	<insert id="insertIntroduce" parameterType="winwin.dto.Introduce">
+  		INSERT INTO introduce(introduceNo, userId, jobopenNo, content1, content2, content3, content4, content5)
+  		VALUES(INTRODUCE_SEQ.NEXTVAL, #{userId }, #{jobopenNo }, #{content1 }, #{content2 }, #{content3 }, #{content4 }, #{content5 })
+  	</insert>  	
+  	
+  	<insert id="insertSupport" parameterType="winwin.dto.Support">
+  		INSERT INTO support(passNO, jobopenNo, userId)
+  		VALUES(SUPPORT_SEQ.NEXTVAL,  #{jobopenNo }, #{userId })
+  	</insert>
+  	
+  	
+  	<select id="selectMember" parameterType="winwin.dto.Member" resultType="winwin.dto.Member">
+		SELECT * FROM member
+		WHERE userid = #{userid }  	
+  	</select>
+  	
+  	<select id="selectUserDetail" parameterType="winwin.dto.UserDetail" resultType="winwin.dto.UserDetail">
+  		SELECT * FROM userdetail
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	<select id="selectHighSchool" parameterType="winwin.dto.HighSchool" resultType="winwin.dto.HighSchool">
+  		SELECT * FROM highschool
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	<select id="selectCollege" parameterType="winwin.dto.College" resultType="winwin.dto.College">
+  		SELECT * FROM college
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	<select id="selectUniversity" parameterType="winwin.dto.University" resultType="winwin.dto.University">
+  		SELECT * FROM university
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	<select id="selectGSchool" parameterType="winwin.dto.GSchool" resultType="winwin.dto.GSchool">
+  		SELECT * FROM gschool
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	<select id="selectMilitary" parameterType="winwin.dto.Military" resultType="winwin.dto.Military">
+  		SELECT * FROM military
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	<select id="selectLanguage" parameterType="winwin.dto.Language" resultType="winwin.dto.Language">
+  		SELECT * FROM language
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	<select id="selectLicense" parameterType="winwin.dto.License" resultType="winwin.dto.License">
+  		SELECT * FROM license
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	<select id="selectCareer" parameterType="winwin.dto.Career" resultType="winwin.dto.Career">
+  		SELECT * FROM career
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	<select id="selectActivity" parameterType="winwin.dto.Activity" resultType="winwin.dto.Activity">
+  		SELECT * FROM activity
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	<select id="selectExperience" parameterType="winwin.dto.Experience" resultType="winwin.dto.Experience">
+  		SELECT * FROM experience
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	<select id="selectMaterial" parameterType="winwin.dto.Material" resultType="winwin.dto.Material">
+  		SELECT * FROM material
+  		WHERE userId = #{userId } AND PORTFOLIOID = #{portfolioId }
+  	</select>
+  	
+  	<select id="selectIntroduce" parameterType="winwin.dto.Introduce" resultType="winwin.dto.Introduce">
+  		SELECT * FROM introduce
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	
+  	
+  	
+  	<update id="updateIntroduce" parameterType="winwin.dto.Introduce">
+  		UPDATE introduce
+  		SET content1 = #{content1 }, 
+  			content2 = #{content2 }, 
+  			content3 = #{content3 }, 
+  			content4 = #{content4 }, 
+  			content5 = #{content5 } 
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</update>
+  	
+  	
+	<insert id="fileUpload" parameterType="winwin.dto.Material">
+		INSERT INTO material( FILENO, USERID, PORTFOLIOID, ORIGINNAME, STOREDNAME, WRITEDATE, FILESIZE) 
+		VALUES (material_SEQ.nextval, #{userId}, #{portfolioId}, #{originName}, #{storedName}, sysdate, #{filesize})
+	</insert>
+	
+  	<select id="countIntro" parameterType="winwin.dto.Introduce" resultType="int">
+  		SELECT count(*) FROM introduce
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	<select id="countMaterial" parameterType="winwin.dto.Material" resultType="int">
+  		SELECT count(*) FROM material
+  		WHERE userId = #{userId } AND PORTFOLIOID = #{portfolioId }
+  	</select>
+  	
+  	<select id="countLanguage" parameterType="winwin.dto.Language" resultType="int">
+  		SELECT count(*) FROM language
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	<select id="countLicense" parameterType="winwin.dto.License" resultType="int">
+  		SELECT count(*) FROM license
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	<select id="countCareer" parameterType="winwin.dto.Career" resultType="int">
+  		SELECT count(*) FROM career
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	<select id="countActivity" parameterType="winwin.dto.Activity" resultType="int">
+  		SELECT count(*) FROM activity
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+  	
+  	<select id="countExperience" parameterType="winwin.dto.Experience" resultType="int">
+  		SELECT count(*) FROM experience
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</select>
+
+  	
+  	<delete id="deleteLanguage" parameterType="winwin.dto.Language">
+ 		DELETE FROM language
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</delete>
+  	
+ 	<delete id="deleteLicense" parameterType="winwin.dto.Language" >
+  		DELETE FROM license
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</delete>
+  	
+  	<delete id="deleteCareer" parameterType="winwin.dto.Language" >
+  		DELETE FROM career
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</delete>
+  	
+  	<delete id="deleteActivity" parameterType="winwin.dto.Language" >
+  		DELETE FROM activity
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</delete>
+  	
+  	<delete id="deleteExperience" parameterType="winwin.dto.Language" >
+  		DELETE FROM experience
+  		WHERE userId = #{userId } AND jobopenNo = #{jobopenNo }
+  	</delete>
+  	
+  	<delete id="deleteMaterial" parameterType="winwin.dto.Material" >
+  		DELETE FROM material
+  		WHERE userId = #{userId } AND PORTFOLIOID = #{portfolioId }
+  	</delete>
+  	
+	
+	
+	
+  </mapper>

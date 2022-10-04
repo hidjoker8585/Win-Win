@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="winwin.dao.JobopenDao">
+  
+  	<insert id="insertBasic" parameterType="winwin.dto.JobopenBasic">
+  		<selectKey order="BEFORE" keyProperty="jobopenNo" resultType="int">
+  			select JobOpenBasic_seq.nextval from dual
+  		</selectKey>
+  		insert into jobopenBasic(jobopenNo, title, offer, form, startPay, endPay, rulePay, startDate, endDate, allOpen, display)
+  		values(#{jobopenNo}, #{title}, #{offer}, #{form}, #{startPay}, #{endPay}, #{rulePay},
+  		<if test="startDate!=null">
+  		#{startDate}, 
+  		</if> 
+  		<if test="startDate==null">
+  		null, 
+  		</if> 
+ 		<if test="endDate!=null">
+  		#{endDate}, 
+  		</if> 
+  		<if test="endDate==null">
+  		null, 
+  		</if> 
+   		 #{allOpen}, 0)
+  	</insert>
+  	
+  	
+  	<select id="selectBasic" resultType="winwin.dto.JobopenBasic" parameterType="winwin.util.Paging">
+		SELECT *  FROM (
+		
+     		SELECT ROWNUM RN, A.* FROM (    
+        		select * from
+        		(select j.title, count(s.userid) as applicantCnt
+            	from jobopenbasic j LEFT JOIN support s 
+            	ON s.jobopenno = j.jobopenno
+            	group by j.title) R LEFT JOIN jobopenBasic O
+        	ON R.title = O.title
+        order by jobopenNo desc) A 
+    
+    <if test="status=='전체 확인'">
+    	where display=1
+    </if>
+    <if test="status=='채용 중' || status=='채용 마감' || status=='결과 발표' || status=='공고 종료'">
+		where status=#{status} AND display=1
+	</if>
+	<if test="status=='메인'">
+		where status in ('채용 중', '결과 발표') and display=1
+	</if>
+	) WHERE RN BETWEEN #{startNo} AND #{endNo}
+  	</select>
+  	
+  	
+  	
+  	
+	<select id="CountBasic" resultType="int">
+		SELECT COUNT(*) CNT FROM (
+		 SELECT * FROM jobopenbasic where status in ('채용 중', '결과 발표') and display=1
+		) CNT
+	</select>
+	
+	<insert id="insertDetail" parameterType="winwin.dto.JobopenDetail">
+		insert into jobopenDetail(jobopenNo, sector, task, volume, location, special, title)
+		values(#{jobopenNo}, #{sector}, #{task}, #{volume}, #{location}, #{special}, #{title})
+	
+	</insert>
+	
+	<update id="updateDetail" parameterType="winwin.dto.JobopenDetail">
+		update jobopenDetail set sector=#{sector}, task=#{task}, volume=#{volume}, location=#{location}, special=#{special} where jobopenNo = #{jobopenNo}
+	</update>
+	
+	
+	<update id="updateBasic" parameterType="winwin.dto.JobopenBasic">
+		update jobopenBasic set academic=#{academic}, score=#{score}, lang=#{lang}, etcQual=#{etcQual}, etc=#{etc} where jobopenNo=#{jobopenNo} 
+	</update>
+	
+	<select id="selectByBasic" resultType="winwin.dto.JobopenBasic" parameterType="winwin.dto.JobopenBasic">
+		select * from jobopenBasic where jobopenNo = #{jobopenNo}
+	</select>
+	
+	<select id="selectDetail" parameterType="winwin.dto.JobopenDetail" resultType="winwin.dto.JobopenDetail">
+		select * from jobopenDetail where jobopenNo = #{jobopenNo}
+	</select>
+	
+	<delete id="deleteBasic" parameterType="int">
+		delete from jobopenBasic where jobopenNo = #{jobopenNo}
+	</delete>
+	
+	<delete id="deleteDetail" parameterType="int">
+		delete from jobopenDetail where jobopenNo = #{jobopenNo}
+	</delete>
+	
+	<update id="resetBasic" parameterType="winwin.dto.JobopenBasic">
+		update jobopenBasic set title=#{title}, offer=#{offer}, form=#{form}, startPay=#{startPay}, endPay=#{endPay}, rulePay=#{rulePay}, 
+		<if test="startDate!=null">
+  		startDate = #{startDate}, 
+  		</if> 
+  		<if test="startDate==null">
+  		startDate = null, 
+  		</if> 
+ 		<if test="endDate!=null">
+  		endDate = #{endDate}, 
+  		</if> 
+  		<if test="endDate==null">
+  		endDate = null, 
+  		</if> 
+  		allOpen=#{allOpen} where jobopenNo=#{jobopenNo}
+	</update>
+	
+	<update id="updateHit" parameterType="winwin.dto.JobopenBasic">
+		update jobopenBasic set hit=hit+1
+		WHERE jobopenNo = #{jobopenNo}
+	</update>
+	
+	<update id="updateBasicDis" parameterType="int">
+		update jobopenBasic set display=1 where jobopenNo = #{jobopenNo}
+	</update>
+	
+	<update id="updateDetailDis" parameterType="int">
+		update jobopenDetail set display=1 where jobopenNo = #{jobopenNo}
+	</update>
+	
+	<update id="updateStatus" parameterType="winwin.dto.JobopenBasic">
+		update jobopenBasic set status=#{status} where jobopenNo = #{jobopenNo}
+	</update>
+	
+	<select id="countStBasic" parameterType="map" resultType="int">
+		select count(*) from jobopenBasic
+	<if test='status=="결과 확인"'>
+    	WHERE display=1
+    </if>
+    <if test='status=="채용 중" || status=="채용 마감" || status=="결과 발표" || status=="공고 종료"'>
+		WHERE status=#{status} and display=1
+	</if>
+	</select>
+	
+	<update id="updateStatusByDate" parameterType="int">
+		update jobopenBasic set status='채용 마감' where jobopenNo=#{jobopenNo}
+	</update>
+  
+  </mapper>

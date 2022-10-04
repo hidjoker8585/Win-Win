@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ <mapper namespace="winwin.dao.NoticeBoardDao">
+ 	<select id="totalCnt" resultType="int">
+ 		SELECT count(*)
+ 		FROM notice	
+ 	</select>
+ 	<select id="list" parameterType="winwin.util.Paging" resultType="winwin.dto.NoticeBoard">
+ 		SELECT
+ 			B.rnum,
+ 			B.noticeno,
+ 			B.title,
+ 			B.code,
+ 			B.writer,
+ 			B.content,
+ 			B.hit,
+ 			B.writedate,
+ 			(SELECT count(*) FROM material
+ 			WHERE noticeno = B.noticeno)filesCnt
+ 		FROM(
+ 			SELECT rownum rnum, A.*
+ 			FROM(
+ 				SELECT * FROM notice
+ 				ORDER BY noticeno DESC
+ 			)A 
+ 			ORDER BY rnum
+ 		)B
+ 		WHERE B.rnum BETWEEN #{startNo} AND #{endNo}
+ 	</select>
+ 	<update id="hit" parameterType="winwin.dto.NoticeBoard">
+ 		UPDATE notice SET hit = hit+1
+ 		WHERE noticeno = #{noticeno}
+ 	</update>
+ 	<select id="view" parameterType="winwin.dto.NoticeBoard" resultType="winwin.dto.NoticeBoard">
+ 		SELECT
+ 			noticeno,
+ 			title,
+ 			code,
+ 			writer,
+ 			content,
+ 			hit,
+ 			writedate
+ 		FROM notice
+ 		WHERE noticeno = #{noticeno} 	
+ 	</select>
+ 	<select id="filesByBoardNo" parameterType="winwin.dto.NoticeBoard" resultType="winwin.dto.Material">
+ 		SELECT
+ 			fileNo,
+ 			userId,
+ 			adminCode,
+ 			noticeNo,
+ 			portfolioId,
+ 			originName,
+ 			storedName,
+ 			writedate,
+ 			filesize
+ 		FROM material
+ 		WHERE noticeno = #{noticeno}
+ 	</select>
+ 	<insert id="write" parameterType="winwin.dto.NoticeBoard">
+ 		INSERT INTO
+ 			notice
+ 		VALUES
+ 			(
+ 			#{noticeno},
+ 			#{title},
+ 			#{code},
+ 			#{writer},
+ 			#{content},
+ 			default,
+ 			default
+ 			)
+ 	</insert>
+ 	<insert id="insertFile" parameterType="winwin.dto.Material">
+ 		INSERT INTO
+ 			material	
+ 		VALUES
+ 			(
+ 			material_seq.nextval,
+ 			null,
+ 			#{adminCode},
+ 			#{noticeNo},
+ 			null,
+ 			#{originName},
+ 			#{storedName},
+ 			default,
+ 			#{filesize}
+ 			)
+ 	</insert>
+ 	<select id="getNoticeNo" resultType="int">
+		SELECT notice_seq.nextval
+		FROM dual
+ 	</select>
+ 	<select id="getFilesCnt" parameterType="winwin.dto.NoticeBoard" resultType="int">
+ 		SELECT count(*)
+ 		FROM Material
+ 		WHERE noticeno = #{noticeno}
+ 	</select>
+ 	<select id="selectFile" parameterType="winwin.dto.Material" resultType="winwin.dto.Material">
+ 		SELECT
+ 			fileNo,
+ 			userId,
+ 			adminCode,
+ 			noticeNo,
+ 			portfolioId,
+ 			originName,
+ 			storedName,
+ 			writedate,
+ 			filesize
+ 		FROM material
+ 		WHERE fileNo = #{fileNo}
+ 	</select>
+ 	<delete id="deleteFilesByBoardNo" parameterType="winwin.dto.NoticeBoard">
+ 		DELETE FROM material
+ 		WHERE noticeno = #{noticeno}
+ 	</delete>
+ 	<delete id="deleteBoard" parameterType="winwin.dto.NoticeBoard">
+ 		DELETE FROM notice
+ 		WHERE noticeno = #{noticeno}
+ 	</delete>
+ 	<delete id="deleteFile" parameterType="winwin.dto.Material">
+ 		DELETE FROM material
+ 		where fileno = #{fileNo}
+ 	</delete>
+ 	<update id="updateBoard" parameterType="winwin.dto.NoticeBoard">
+ 		UPDATE notice
+ 		SET title=#{title}, content=#{content}
+ 		WHERE noticeno = #{noticeno}	
+ 	</update>
+ </mapper>

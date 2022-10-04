@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="winwin.dao.MemberDao">
+  
+   <insert id="join" parameterType="winwin.dto.Member">
+		INSERT INTO member ( userid, username, phone, pwd ) VALUES ( #{userid }, #{username }, #{phone }, #{pwd } )
+	</insert>
+	
+	<select id="selectCnt" parameterType="winwin.dto.Member" resultType="int" >
+		select count(*) from member where userid=#{userid } and pwd=#{pwd }
+	</select>
+	
+	<select id="select" resultType="winwin.dto.Member">
+		select * from member where userid=#{userid }
+	</select>
+	
+	<select id="idcheck" parameterType="winwin.dto.Member" resultType="int" >
+		select count(*) from member where userid=#{userid }
+	</select>
+	
+	<select id="emailSearchCnt" parameterType="winwin.dto.Member" resultType="int" >
+		select count(*) from member where username=#{username } and phone=#{phone }
+	</select>
+	
+	<select id="emailSearch" resultType="winwin.dto.Member">
+		select (userid) from member where username=#{username } and phone=#{phone }
+	</select>
+	
+	<select id="pwdSearchCnt" parameterType="winwin.dto.Member" resultType="int">
+		select count(*) from member where username=#{username } and userid=#{userid }
+	</select>
+	
+	<select id="pwdSearch" resultType="winwin.dto.Member">
+		select (pwd) from member where username=#{username } and userid=#{userid }
+	</select>
+	
+	<update id="temppwchange" parameterType="winwin.dto.Member">
+		update member set pwd = #{pwd } where userid = #{userid }
+	</update>
+	
+	<select id="pwChangeCnt" parameterType="winwin.dto.Member" resultType="int">
+		select count(*) from member where userid=#{userid } and pwd=#{pwd }
+	</select>
+	
+	<update id="pwdChange" parameterType="winwin.dto.Member">
+		update member set pwd = #{pwd } where userid = #{userid }
+	</update>
+	
+  </mapper>

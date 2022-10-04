@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="winwin.dao.Apply1Dao">
+  	<select id="selectMember" parameterType="winwin.dto.Member" resultType="winwin.dto.Member">
+  		SELECT username, phone FROM member WHERE userId=#{userid}
+  	</select>
+  	
+  	<insert id="insertUserDetail" parameterType="winwin.dto.UserDetail">
+  		INSERT INTO userDetail (userdetailNo, userId, jobopenNo, eName, birth, zipCode, address, addressDetail, phoneNum, veteran, disable, interest, task) VALUES ( userdetail_seq.nextval, #{userId} ,#{jobopenNo} ,#{eName} ,#{birth} ,#{zipCode} ,#{address} ,#{addressDetail} ,#{phoneNum} ,#{veteran} ,#{disable} ,#{interest}, #{task})
+  	</insert>
+  	
+  	<insert id="insertMilitary" parameterType="winwin.dto.Military">
+  		INSERT INTO military (militaryNo, userId, jobopenNo,
+  		<if test='discharge.equals("비대상") or discharge.equals("면제") or discharge.equals("미필")'>
+  			discharge) VALUES (military_seq.nextval, #{userId}, #{jobopenNo}, #{discharge})
+  		</if>
+  		<if test='discharge.equals("군필")or discharge.equals("복무중")'>
+  			discharge, startDate, endDate, mCategory, mGrade) VALUES (military_seq.nextval, #{userId}, #{jobopenNo}, #{discharge}, #{startDate}, #{endDate}, #{mCategory}, #{mGrade}) 
+  		</if>
+  	</insert>
+  	
+  	<select id="selectJobOpen" parameterType="winwin.dto.JobopenBasic" resultType="winwin.dto.JobopenBasic">
+  		SELECT title, endDate, jobopenNo FROM jobopenbasic WHERE jobopenNo=#{jobopenNo}
+  	</select>
+  	
+  	<select id="selectTask" parameterType="winwin.dto.JobopenDetail" resultType="winwin.dto.JobopenDetail">
+  		SELECT DISTINCT task FROM jobopenDetail WHERE jobopenNo=#{jobopenNo}
+  	</select>
+  	
+  	<insert id="insertHighSchool" parameterType="winwin.dto.HighSchool">
+  		INSERT INTO highSchool (hsNo, userId, jobopenNo, hsName, hsDay, hsMajor, hsEndDate, hsGraduate, hsRegion) VALUES (highschool_seq.nextval, #{userId}, #{jobopenNo}, #{hsName}, #{hsDay}, #{hsMajor}, #{hsEndDate}, #{hsGraduate}, #{hsRegion})
+  	</insert>
+  	
+  	<insert id="insertCollege" parameterType="winwin.dto.College">
+  		INSERT INTO college (colNo, userId, jobopenNo, colName, colBranch, colDay, colMajor, colScore, colTotalScore, colStartDate, colEndDate, colTransfer, colGraduate, colRegion) VALUES (college_seq.nextval, #{userId}, #{jobopenNo}, #{colName}, #{colBranch}, #{colDay}, #{colMajor}, #{colScore}, #{colTotalScore}, #{colStartDate}, #{colEndDate}, #{colTransfer}, #{colGraduate}, #{colRegion})
+  	</insert>
+  	
+  	<insert id="insertUniversity" parameterType="winwin.dto.University">
+  		INSERT INTO university (univNo, userId, jobopenNo, univName, univBranch, univDay, univMajor, univMinor, univScore, univTotalScore, univStartDate, univEndDate, univTransfer, univGraduate, univRegion) 
+  		<if test='univMinor!=null and !univMinor.equals("")'>
+  			VALUES(university_seq.nextval, #{userId}, #{jobopenNo}, #{univName}, #{univBranch}, #{univDay}, #{univMajor}, #{univMinor}, #{univScore}, #{univTotalScore},  #{univStartDate}, #{univEndDate}, #{univTransfer}, #{univGraduate}, #{univRegion})			
+  		</if>
+  		<if test='univMinor==null or univMinor.equals("")'>
+  			VALUES(university_seq.nextval, #{userId}, #{jobopenNo}, #{univName}, #{univBranch}, #{univDay}, #{univMajor}, default, #{univScore}, #{univTotalScore},  #{univStartDate}, #{univEndDate}, #{univTransfer}, #{univGraduate}, #{univRegion})
+  		</if>
+  	</insert>
+
+  	<insert id="insertGSchool" parameterType="winwin.dto.GSchool">
+  		INSERT INTO gSchool (gsNo, userId, jobopenNo, gsName, gsBranch, gsDay, gsMajor, gsScore, gsTotalScore, gsEndDate, gsGraduate, gsRegion) VALUES (gschool_seq.nextval,#{userId}, #{jobopenNo}, #{gsName}, #{gsBranch}, #{gsDay}, #{gsMajor}, #{gsScore}, #{gsTotalScore}, #{gsEndDate}, #{gsGraduate}, #{gsRegion})
+  	</insert>
+  	
+  	<select id="selectUserDetail" parameterType="winwin.dto.UserDetail" resultType="winwin.dto.UserDetail">
+  		SELECT * FROM userDetail WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+  	</select>
+  	
+  	<update id="updateMemCountNone" parameterType="String">
+  		UPDATE member SET count='학력 무관' WHERE userId=#{value}
+  	</update>
+
+  	<update id="updateMemCountH" parameterType="String">
+  		UPDATE member SET count='고등학교 졸업' WHERE userId=#{value}
+  	</update>
+
+  	<update id="updateMemCountC" parameterType="String">
+  		UPDATE member SET count='대학교졸업(2~3년)' WHERE userId=#{value}
+  	</update>
+
+  	<update id="updateMemCountU" parameterType="String">
+  		UPDATE member SET count='대학교졸업(4년)' WHERE userId=#{value}
+  	</update>
+
+  	<update id="updateMemCountGS" parameterType="String">
+  		UPDATE member SET count='석사 이상' WHERE userId=#{value}
+  	</update>
+  	
+	<select id="selectHighSchool" parameterType="winwin.dto.HighSchool" resultType="winwin.dto.HighSchool">
+		SELECT * FROM highschool WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+
+	<select id="selectCollege" parameterType="winwin.dto.College" resultType="winwin.dto.College">
+		SELECT * FROM college WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+
+	<select id="selectUniversity" parameterType="winwin.dto.University" resultType="winwin.dto.University">
+		SELECT * FROM university WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+
+	<select id="selectGSchool" parameterType="winwin.dto.GSchool" resultType="winwin.dto.GSchool">
+		SELECT * FROM gschool WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+	
+	<select id="selectMilitary" parameterType="winwin.dto.Military" resultType="winwin.dto.Military">
+		SELECT * FROM military WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+	
+	<select id="countUserDetail" parameterType="winwin.dto.UserDetail" resultType="int">
+		SELECT count(*) FROM userDetail WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+	
+	<select id="countHighSchool" parameterType="winwin.dto.HighSchool" resultType="int">
+		SELECT count(*) FROM highSchool WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+
+	<select id="countCollege" parameterType="winwin.dto.College" resultType="int">
+		SELECT count(*) FROM college WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+
+	<select id="countUniversity" parameterType="winwin.dto.University" resultType="int">
+		SELECT count(*) FROM university WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+
+	<select id="countGSchool" parameterType="winwin.dto.GSchool" resultType="int">
+		SELECT count(*) FROM gschool WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+
+	<select id="countMilitary" parameterType="winwin.dto.Military" resultType="int">
+		SELECT count(*) FROM military WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+	
+	<select id="countLanguage" parameterType="winwin.dto.Language" resultType="int">
+		SELECT count(*) FROM language WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+
+	<select id="countLicense" parameterType="winwin.dto.License" resultType="int">
+		SELECT count(*) FROM license WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+
+	<select id="countCareer" parameterType="winwin.dto.Career" resultType="int">
+		SELECT count(*) FROM career WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+
+	<select id="countActivity" parameterType="winwin.dto.Activity" resultType="int">
+		SELECT count(*) FROM activity WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+
+	<select id="countExperience" parameterType="winwin.dto.Experience" resultType="int">
+		SELECT count(*) FROM experience WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+
+	<select id="countMaterial" parameterType="winwin.dto.Material" resultType="int">
+		SELECT count(*) FROM material WHERE userId=#{userId} AND portfolioId=#{portfolioId}
+	</select>
+	
+	<select id="countIntroduce" parameterType="winwin.dto.Introduce" resultType="int">
+		SELECT count(*) FROM introduce WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</select>
+	
+	<update id="updateUserDetail" parameterType="winwin.dto.UserDetail">
+		UPDATE userDetail SET eName=#{eName}, birth=#{birth}, zipCode=#{zipCode}, address=#{address}, addressDetail=#{addressDetail}, phoneNum=#{phoneNum}, veteran=#{veteran}, disable=#{disable}, interest=#{interest}, task=#{task} WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</update>
+	
+	<update id="updateHighSchool" parameterType="winwin.dto.HighSchool">
+		UPDATE highSchool SET hsName=#{hsName}, hsDay=#{hsDay}, hsMajor=#{hsMajor}, hsEndDate=#{hsEndDate}, hsGraduate=#{hsGraduate}, hsRegion=#{hsRegion} WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</update>
+	
+	<update id="updateCollege" parameterType="winwin.dto.College">
+		UPDATE college SET colName=#{colName}, colBranch=#{colBranch}, colDay=#{colDay}, colMajor=#{colMajor}, colScore=#{colScore}, colTotalScore=#{colTotalScore}, colStartDate=#{colStartDate}, colEndDate=#{colEndDate}, colTransfer=#{colTransfer}, colGraduate=#{colGraduate}, colRegion=#{colRegion} WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+	</update>
+	
+  	<update id="updateUniversity" parameterType="winwin.dto.University">
+  		UPDATE university SET 
+  		<if test='univMinor!=null and !univMinor.equals("")'>
+			univName=#{univName}, univBranch=#{univBranch}, univDay=#{univDay}, univMajor=#{univMajor}, univMinor=#{univMinor}, univScore=#{univScore}, univTotalScore=#{univTotalScore},  univStartDate=#{univStartDate}, univEndDate=#{univEndDate}, univTransfer=#{univTransfer}, univGraduate=#{univGraduate}, univRegion=#{univRegion}
+  		</if>
+  		<if test='univMinor==null or univMinor.equals("")'>
+  			univName=#{univName}, univBranch=#{univBranch}, univDay=#{univDay}, univMajor=#{univMajor}, univMinor=default, univScore=#{univScore}, univTotalScore=#{univTotalScore},  univStartDate=#{univStartDate}, univEndDate=#{univEndDate}, univTransfer=#{univTransfer}, univGraduate=#{univGraduate}, univRegion=#{univRegion}
+  		</if>
+  		WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+  	</update>
+  	
+  	<update id="updateGSchool" parameterType="winwin.dto.GSchool">
+  		UPDATE gSchool SET gsName=#{gsName}, gsBranch=#{gsBranch}, gsDay=#{gsDay}, gsMajor=#{gsMajor}, gsScore=#{gsScore}, gsTotalScore=#{gsTotalScore}, gsEndDate=#{gsEndDate}, gsGraduate=#{gsGraduate}, gsRegion=#{gsRegion} WHERE userId=#{userId} AND jobopenNo=#{jobopenNo}
+  	</update>
+  	
+  	<delete id="deleteHighSchool" parameterType="winwin.dto.HighSchool">
+  		DELETE FROM highSchool WHERE jobopenNo=#{jobopenNo} AND userId=#{userId}
+  	</delete>
+  	
+  	<delete id="deleteCollege" parameterType="winwin.dto.College">
+  		DELETE FROM college WHERE jobopenNo=#{jobopenNo} AND userId=#{userId}
+  	</delete>
+  	
+  	<delete id="deleteUniversity" parameterType="winwin.dto.University">
+  		DELETE FROM university WHERE jobopenNo=#{jobopenNo} AND userId=#{userId}
+  	</delete>
+
+	<delete id="deleteGSchool" parameterType="winwin.dto.GSchool">
+		DELETE FROM gSchool WHERE jobopenNo=#{jobopenNo} AND userId=#{userId}
+	</delete>
+	
+	<update id="resetMemAcademic" parameterType="String">
+		UPDATE member SET count=1 WHERE userId=#{value}
+	</update>
+	
+	<delete id="deleteMilitary" parameterType="winwin.dto.Military">
+		DELETE FROM military WHERE jobopenNo=#{jobopenNo} AND userId=#{userId}
+	</delete>
+	
+</mapper>

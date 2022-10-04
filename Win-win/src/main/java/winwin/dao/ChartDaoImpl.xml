@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ <mapper namespace="winwin.dao.ChartDao">
+ 	<select id="ages20Cho" resultType="int">
+ 		SELECT count(*)
+ 		FROM( SELECT userid, to_NUMBER(SUBSTR(birth,0,4)) birth
+ 			FROM support 
+ 			JOIN userdetail USING(userid)) a
+ 		WHERE a.birth BETWEEN (to_char(sysdate,'YYYY')-24) AND (to_char(sysdate,'YYYY')-19)
+ 	</select>
+ 	<select id="ages20Hu" resultType="int">
+ 		SELECT count(*)
+ 		FROM( SELECT userid, to_NUMBER(SUBSTR(birth,0,4)) birth
+ 			FROM support 
+ 			JOIN userdetail USING(userid)) a
+ 		WHERE a.birth BETWEEN (to_char(sysdate,'YYYY')-28) AND (to_char(sysdate,'YYYY')-25)
+ 	</select>
+ 	<select id="ages30s" resultType="int">
+ 		SELECT count(*)
+ 		FROM( SELECT userid, to_NUMBER(SUBSTR(birth,0,4)) birth
+ 			FROM support 
+ 			JOIN userdetail USING(userid)) a
+ 		WHERE a.birth BETWEEN (to_char(sysdate,'YYYY')-38) AND (to_char(sysdate,'YYYY')-29)
+ 	</select>
+ 	<select id="ages40s" resultType="int">
+ 		SELECT count(*)
+ 		FROM( SELECT userid, to_NUMBER(SUBSTR(birth,0,4)) birth
+ 			FROM support 
+ 			JOIN userdetail USING(userid)) a
+ 		WHERE a.birth BETWEEN (to_char(sysdate,'YYYY')-48) AND (to_char(sysdate,'YYYY')-39)
+ 	</select>
+ 	<select id="eduno" resultType="int">
+ 	 	SELECT count(*)
+ 		FROM ( SELECT userid, count
+ 			FROM support 
+ 			JOIN member USING(userid)) a
+ 		WHERE SUBSTR(a.count,0,2) = '학력'
+ 	</select>
+ 	<select id="eduHigh" resultType="int">
+ 		SELECT count(*)
+ 		FROM ( SELECT userid, count
+ 			FROM support 
+ 			JOIN member USING(userid)) a
+ 		WHERE SUBSTR(a.count,0,2) = '고등'		
+ 	</select>
+ 	 <select id="eduColl" resultType="int">
+ 		SELECT count(*)
+ 		FROM ( SELECT userid, count
+ 			FROM support 
+ 			JOIN member USING(userid)) a
+ 		WHERE SUBSTR(a.count,0,2) = '대학' AND a.count LIKE '%2%'
+ 	</select>
+ 	 <select id="eduUniv" resultType="int">
+ 		SELECT count(*)
+ 		FROM ( SELECT userid, count
+ 			FROM support 
+ 			JOIN member USING(userid)) a
+ 		WHERE SUBSTR(a.count,0,2) = '대학' AND a.count LIKE '%4%'
+ 	</select>
+ 	 <select id="eduMD" resultType="int">
+ 		SELECT count(*)
+ 		FROM ( SELECT userid, count
+ 			FROM support 
+ 			JOIN member USING(userid)) a
+ 		WHERE SUBSTR(a.count,0,2) = '석사'		
+ 	</select>
+ 	<select id="second_18" resultType="int">
+ 		SELECT count(*)
+ 		FROM support
+ 	</select>
+
+ </mapper>

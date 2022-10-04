@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ <mapper namespace="winwin.dao.QnaBoardDao">
+ 	<sql id="commentCnt">
+ 		SELECT count(*)
+ 		FROM qna_comment
+ 		WHERE qnano = #{qnaNo}
+ 	</sql> 	
+ 	<select id="list" parameterType="winwin.util.Paging" resultType="winwin.dto.QnaBoard">
+ 		SELECT
+ 			B.qnaNo,
+ 			B.title,
+ 			B.userId,
+ 			B.writer,
+ 			B.pw,
+ 			B.content,
+ 			B.hit,
+ 			B.writedate,
+ 			B.asw_code,
+ 			B.asw_writer,
+ 			B.asw_content,
+ 			B.asw_date,
+ 			(SELECT count(*)
+ 			 FROM qna_comment
+ 			 WHERE qnano=B.qnaNo) commentCnt
+ 		FROM (
+ 			SELECT rownum rnum, A.*
+ 			FROM(
+ 				SELECT * FROM qna
+ 				ORDER BY qnano DESC
+ 			)A
+ 			ORDER BY rnum
+ 		)B
+ 		WHERE B.rnum BETWEEN #{startNo} AND #{endNo}
+ 	</select>
+ 	<select id="totalCnt" resultType="int">
+ 		SELECT count(*)
+ 		FROM qna
+ 	</select>
+ 	<select id="view" parameterType="winwin.dto.QnaBoard" resultType="winwin.dto.QnaBoard">
+ 		SELECT
+ 			qnaNo,
+ 			title,
+ 			userId,
+ 			writer,
+ 			pw,
+ 			content,
+ 			hit,
+ 			writedate,
+ 			asw_code,
+ 			asw_writer,
+ 			asw_content,
+ 			asw_date,
+ 			(<include refid="commentCnt"/>) commentCnt
+ 		FROM qna
+ 		WHERE qnano = #{qnaNo}
+ 	</select>
+ 	<insert id="write" parameterType="winwin.dto.QnaBoard">
+ 		INSERT INTO qna(qnano,title,userid,writer,pw,content,hit,writedate)
+ 		VALUES (qna_seq.nextval,#{title},#{userId},#{writer},#{pw},#{content},default,default)	
+ 	</insert>
+ 	<delete id="deleteBoard" parameterType="winwin.dto.QnaBoard">
+		DELETE FROM qna
+		WHERE qnano = #{qnaNo} 		
+ 	</delete>
+ 	<update id="updateBoard" parameterType="winwin.dto.QnaBoard">
+ 		UPDATE qna
+ 		SET title=#{title}, pw=#{pw}, content=#{content}
+ 		WHERE qnaNo=#{qnaNo}	
+ 	</update>
+ 	<update id="updateBoardAsw" parameterType="winwin.dto.QnaBoard">
+ 		UPDATE qna
+ 		SET asw_code = #{asw_code}, asw_writer = #{asw_writer}, asw_content = #{asw_content}, asw_date= sysdate
+ 		WHERE qnaNo = #{qnaNo}
+ 	</update>
+ 	<update id="deleteBoardAsw" parameterType="winwin.dto.QnaBoard">
+ 		UPDATE qna
+ 		SET	asw_code= null, asw_writer = null, asw_content = null, asw_date = null
+ 		WHERE qnaNo = #{qnaNo}
+ 	</update>
+ 	<update id="hit" parameterType="winwin.dto.QnaBoard">
+ 		UPDATE qna
+ 		SET hit = hit+1
+ 		WHERE qnaNo = #{qnaNo }
+ 	</update>
+ 	<insert id="insertComment" parameterType="winwin.dto.QnaComment">
+ 		INSERT INTO qna_comment
+ 		VALUES(qna_comment_seq.nextval,#{qnaNo},#{writer},#{id},#{content},default) 		
+ 	</insert>
+ 	<delete id="deleteComment" parameterType="winwin.dto.QnaComment">
+ 		DELETE FROM qna_comment
+ 		WHERE commentNo = #{commentNo} 		
+ 	</delete>
+ 	<select id="selectCommentByBoardNo" parameterType="winwin.dto.QnaBoard" resultType="winwin.dto.QnaComment">
+ 		SELECT 
+ 			commentno
+ 			,qnano
+ 			,writer
+ 			,id
+ 			,content
+ 			,writedate	 			
+ 		FROM qna_comment
+ 		WHERE qnano = #{qnaNo}
+ 		ORDER BY commentno
+ 	</select>
+ 	<select id="getCommentCnt" parameterType="winwin.dto.QnaBoard" resultType="int">
+ 	 	<include refid="commentCnt"/>
+ 	</select>
+ 	<select id="getComment" parameterType="winwin.dto.QnaComment" resultType="winwin.dto.QnaComment">
+ 		SELECT 
+ 		 	commentno
+ 			,qnano
+ 			,writer
+ 			,id
+ 			,content
+ 			,writedate	
+ 		FROM qna_comment
+ 		WHERE commentno = #{commentNo }
+ 	</select>
+ </mapper>

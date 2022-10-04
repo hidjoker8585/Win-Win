@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ <mapper namespace="winwin.dao.AllDataDao">
+ 
+	 <select id="getMem" parameterType="map" resultType="winwin.dto.Member">
+ 		select * from member where userid=#{userId}
+ 	</select>
+ 
+ 	<select id="getUser" parameterType="map" resultType="winwin.dto.UserDetail">
+ 		select * from userdetail where userid=#{userId} and jobopenNo=#{jobopenNo}
+ 	</select>
+ 	
+ 	<select id="getHigh" parameterType="map" resultType="winwin.dto.HighSchool">
+ 		select * from highschool where userid=#{userId} and jobopenNo=#{jobopenNo}
+ 	</select>
+ 	
+ 	<select id="getCol" parameterType="map" resultType="winwin.dto.College">
+ 		select * from college where userid=#{userId} and jobopenNo=#{jobopenNo}
+ 	</select>
+ 	
+ 	<select id="getUni" parameterType="map" resultType="winwin.dto.University">
+ 		select * from university where userid=#{userId} and jobopenNo=#{jobopenNo}
+ 	</select>
+ 	
+ 	<select id="getGs" parameterType="map" resultType="winwin.dto.GSchool">
+ 		select * from gschool where userid=#{userId} and jobopenNo=#{jobopenNo}
+ 	</select>
+ 	
+ 	<select id="getMil" parameterType="map" resultType="winwin.dto.Military">
+ 		select * from military where userid=#{userId} and jobopenNo=#{jobopenNo}
+ 	</select>
+ 	
+ 	<select id="getCar" parameterType="map" resultType="winwin.dto.Career">
+ 		select * from career where userid=#{userId} and jobopenNo=#{jobopenNo}
+ 	</select>
+ 	
+ 	<select id="getAct" parameterType="map" resultType="winwin.dto.Activity">
+ 		select * from activity where userid=#{userId} and jobopenNo=#{jobopenNo}
+ 	</select>
+ 	
+ 	<select id="getLic" parameterType="map" resultType="winwin.dto.License">
+ 		select * from license where userid=#{userId} and jobopenNo=#{jobopenNo}
+ 	</select>
+ 	
+ 	<select id="getLang" parameterType="map" resultType="winwin.dto.Language">
+ 		select * from language where userid=#{userId} and jobopenNo=#{jobopenNo}
+ 	</select>
+ 	
+ 	<select id="getExp" parameterType="map" resultType="winwin.dto.Experience">
+ 		select * from experience where userid=#{userId} and jobopenNo=#{jobopenNo}
+ 	</select>
+ 	
+ 	<select id="getIntro" parameterType="map" resultType="winwin.dto.Introduce">
+ 		select * from introduce where userid=#{userId} and jobopenNo=#{jobopenNo}
+ 	</select>
+ 
+ 
+ </mapper>

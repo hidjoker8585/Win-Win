@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="winwin.dao.ApplyMenuDao">
+	<select id="getJobopenBasic" parameterType="int" resultType="winwin.dto.JobopenBasic">
+		SELECT jobopenno, title, enddate, allopen, offer, status FROM JobOpenBasic
+		WHERE offer like '%신입%' and display=1 and status='채용 중'
+		ORDER BY jobopenno DESC
+	</select>
+	
+	<select id="getJobopenBasic2" resultType="winwin.dto.JobopenBasic">
+		SELECT jobopenno, title, enddate, allopen, offer, status FROM JobOpenBasic
+		WHERE offer like '%경력%' and display=1 and status='채용 중'
+		ORDER BY jobopenno DESC
+	</select>
+	
+	<select id="getJobopenBasic3" parameterType="int" resultType="winwin.dto.JobopenBasic">
+		SELECT jobopenno, title, enddate, allopen, offer, status FROM JobOpenBasic
+		WHERE offer like '%신입%' and display=1 and status='결과 발표'
+		ORDER BY jobopenno DESC
+	</select>
+	
+	<select id="getJobopenBasic4" resultType="winwin.dto.JobopenBasic">
+		SELECT jobopenno, title, enddate, allopen, offer, status FROM JobOpenBasic
+		WHERE offer like '%경력%' and display=1 and status='결과 발표'
+		ORDER BY jobopenno DESC
+	</select>
+	
+	
+	<select id="pwCheck" parameterType="winwin.dto.Member" resultType="int">
+		SELECT COUNT(*) CNT FROM (
+			SELECT userid, pwd FROM member
+               WHERE userid = #{userid }
+               AND pwd = #{pwd}
+		) 
+	</select>
+	
+	<select id="checkApplicant" parameterType="winwin.dto.Support" resultType="int">
+		SELECT COUNT(*) FROM support WHERE jobopenno=#{jobopenNo} AND userid=#{userId} 
+	</select>
+	
+	<select id="passfail" parameterType="winwin.dto.Support" resultType="winwin.dto.Support">
+		SELECT * FROM support WHERE jobopenno=#{jobopenNo} AND userid=#{userId} 
+	</select>
+	
+</mapper>

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ <mapper namespace="winwin.dao.SupportDao">
+ 	<resultMap type="winwin.dto.SupportBoard" id="Support">
+ 		<result column="passNo" property="passNo"/>
+ 		<result column="jobOpenNo" property="jobOpenNo"/>
+ 		<result column="fileNo" property="fileNo"/>
+ 		<result column="title" property="title"/>
+ 		<result column="task" property="task"/>
+ 		<result column="supportDate" property="supportDate"/>
+ 		<result column="username" property="username"/>
+ 		<result column="portfolioId" property="portfolioId"/>
+ 		<result column="status" property="status"/>
+ 	</resultMap>
+ 	
+ 	<resultMap type="winwin.dto.SupportBoard" id="Result">
+		<result column="passNo" property="passNo" />
+		<result column="title" property="title" />
+		<result column="task" property="task" />
+		<result column="supportDate" property="supportDate" />
+		<result column="username" property="username" />
+		<result column="pass" property="pass" />
+		<result column="emailSend" property="emailSend" />
+	</resultMap>
+ 	
+ 	   <select id="list" resultMap="Support" parameterType="map">
+       SELECT * FROM ( SELECT rownum rnum, T.* FROM(
+       <include refid="selectSupportBoard"/>
+       ) T ORDER BY supportDate DESC ) R WHERE R.rnum BETWEEN #{startNo} AND #{endNo} ORDER BY rnum
+    </select>
+    
+    <sql id="selectSupportBoard">
+       SELECT distinct
+          job.jobOpenNo,
+          sup.supportDate,
+          sup.status, 
+          job.title,
+          mem.username,
+          mem.userId,
+          mem.count,
+          usr.task
+       FROM 
+          jobopenBasic job, support sup, member mem, userDetail usr, university univ, language lang
+       
+       <where>
+          usr.userid = mem.userid and
+          usr.userid = sup.userid and
+          univ.jobopenno = job.jobopenno and
+          usr.jobopenno = job.jobopenno and
+          usr.jobopenno = lang.jobopenno and
+          usr.userid = lang.userid and
+          lang.testname = 'TOEIC'
+          
+          <!-- 경력 ( 신입, 경력 ) -->
+         <if test="career != null and career != ''">
+            AND job.offer LIKE '%' || #{career} || '%'
+         </if>       
+         <!-- 고용형태 -->
+         <if test="employment != null and employment != ''">
+            AND job.form LIKE '%' || #{employment} || '%'
+         </if>
+         <!-- 학력 -->
+         <if test="academiccareer != null and academiccareer != ''">
+            AND mem.count=#{academiccareer}
+         </if>
+         <!-- 학점 -->
+         <if test="credit != null and credit !=''">
+            AND univ.univscore >= #{credit}
+         </if>
+         <!-- 토익 -->
+         <if test="language != null and language != ''">
+            AND lang.score >= #{language}
+         </if>
+         <!-- 처리상태 -->
+         <if test="status != null and status != ''">
+            AND sup.status = #{status}
+         </if>
+         <!-- 공고명 -->
+         <if test='title != "0"'>
+            <if test="title != null and title != ''">
+               AND job.title = #{title}
+            </if>
+         </if>
+       </where>
+    </sql>
+ 	
+ 	
+ 	
+ 	
+ 	<select id="totalCnt" resultType="int" parameterType="map">
+ 		SELECT COUNT(*) CNT FROM (
+ 		<include refid="selectSupportBoard"/>
+ 		) CNT	
+ 	</select>
+ 	
+ 	<sql id="selectResultBoard">
+		 select
+		    job.title,
+		    job.offer,
+		    sup.supportdate,
+		    mem.username,
+		    sup.pass,
+		    sup.emailsend,
+		    usr.task,
+		    sup.userid,
+		    sup.jobopenno,
+		    sup.passNo
+		from 
+		    jobopenBasic job,
+		    support sup,
+		    member mem,
+		    userDetail usr
+
+		<where>
+			mem.userid = sup.userid and
+    		job.jobopenno = sup.jobopenno and
+    		usr.userid = mem.userid and
+    		job.display = 1
+
+			<choose>
+				<when test="pass != null and pass != '' and fail != null and fail != ''">
+				AND sup.pass IN ( #{pass}, #{fail} )
+				</when>
+				<when test="pass != null and pass != ''">
+				AND sup.pass = #{pass}
+				</when>
+				<when test="fail != null and fail != ''">
+				AND sup.pass = #{fail}
+				</when>
+			</choose>			
+
+			<if test='title != "0"'>
+			<if test="title != null and title != ''">
+				AND job.title = #{title}
+			</if>
+			</if>
+		</where>
+		
+			
+			<!-- 고용형태 -->
+			
+
+	</sql>
+	
+	<select id="resultlist" resultMap="Result"
+		parameterType="map">
+		SELECT * FROM ( SELECT rownum rnum, T.* FROM(
+		<include refid="selectResultBoard" />
+		) T ORDER BY supportDate DESC ) R WHERE R.rnum BETWEEN #{startNo} AND
+		#{endNo} ORDER BY rnum
+	</select>
+
+	<select id="resultCnt" resultType="int">
+		SELECT COUNT(*) CNT FROM (
+		<include refid="selectResultBoard" />
+		) CNT
+	</select>
+	
+	<select id="getTitle" resultType="winwin.dto.JobopenBasic">
+		SELECT title FROM jobopenbasic where display=1
+	</select>
+	
+	<update id="emailupdate" parameterType="int">
+		UPDATE support SET emailsend='발송' WHERE passno=#{passNo}
+	</update>
+	
+	<select id="download" parameterType="winwin.dto.SupportBoard" resultType="winwin.dto.Material">
+		SELECT * FROM material where portfolioId = #{portfolioId} and userid = #{userId}
+	</select>
+	
+	<select id="getFile" parameterType="map" resultType="winwin.dto.Material">
+		SELECT originName FROM material mat, support sup 
+            WHERE mat.PORTFOLIOID = sup.JOBOPENNO AND sup.userid = mat.userid 
+            
+            AND mat.portfolioId = ${portfolioId}
+            AND sup.userid = #{userId}
+	</select>
+	
+	<update id="statusupdate" parameterType="map">
+	update support set pass=#{status}, status='처리 후' where userId=#{userId} and jobopenNo=#{jobopenNo}
+	</update>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+ </mapper>

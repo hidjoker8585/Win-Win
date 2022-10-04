@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="winwin.dao.MainDao">
+  
+  <select id="countQnAUnanswered" resultType="int">
+  	
+  	select count(*) fROM qna q WHERE length(q.asw_code)>0
+  
+  </select>
+  
+  <select id="allCountQnA" resultType="int">
+  	select count(*) fROM qna
+  </select>
+  
+  	<select id="getNoticeBoard" resultType="winwin.dto.NoticeBoard">
+		SELECT noticeno, title FROM notice
+		ORDER BY noticeno DESC
+	</select>
+	
+	<select id="getQnaBoard" resultType="winwin.dto.QnaBoard">
+		SELECT qnano, title FROM qna
+		ORDER BY qnano DESC
+	</select>
+	
+	<select id="getJobopenBasic" resultType="winwin.dto.JobopenBasic">
+		SELECT jobopenno, title FROM jobopenbasic where display=1
+		ORDER BY jobopenno DESC
+	</select>
+	
+	<select id="countSupport" resultType="winwin.dto.JobopenBasic">
+	select A.* from(
+		select count(s.userid) as applicantCnt, j.title, j.display
+	    	from support s
+	    		right outer join jobopenbasic j
+	    	on s.jobopenno=j.jobopenno
+	    	group by j.title, j.display
+    	) A
+	where A.display =1
+	</select>
+	<select id="getSec18" resultType="int">
+	 	SELECT count(*)
+ 		FROM support
+	</select>
+  
+  </mapper>
